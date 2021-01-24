@@ -1,30 +1,35 @@
 from rest_framework import serializers
-from .models import Artist, Album, Song, Playlist, Playlist_Song
+from .models import Song, Playlist, User, SongPlaylist
 
-class ArtistSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Artist
-        fields = ['id', 'name', 'country']
 
-class AlbumSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Album
-        fields = ['id', 'name', 'number_of_songs', 'type_of_music', 'artist_id']
 
 class SongSerializer(serializers.ModelSerializer):
     class Meta:
         model = Song
-        fields = ['id', 'track', 'length', 'album_id']
+        fields = ['id','track', 'artist', 'album', 'length']
 
 class PlaylistSerializer(serializers.ModelSerializer):
     class Meta:
         model = Playlist
-        fields = ['id', 'name', 'number_of_songs']
+        fields = ['id', 'name', 'number_of_songs', 'id_user']
 
-class PlaylistSongSerializer(serializers.ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Playlist_Song
-        fields = ['song_id', 'playlist_id']
+        model = User
+        fields = ('name', 'password')
+        extra_kwargs = {'password': {'write_only': True}}
+    
+    def create(self, validated_data):
+        password = validated_data.pop('password')
+        user = User(**validated_data)
+        user.set_password(password)
+        user.save()
+        return user
+
+
+
+
+
 
     
 
