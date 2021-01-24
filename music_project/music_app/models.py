@@ -1,39 +1,33 @@
 from django.db import models
 
 
-class Artist(models.Model):
-    name = models.CharField(max_length=45, unique=True)
-    country = models.CharField(max_length=45)
-
-    def __str__(self):
-        return self.name
-
-class Album(models.Model):
-    name = models.CharField(max_length=45, unique=True)
-    number_of_songs = models.IntegerField()
-    type_of_music = models.CharField(max_length=45)
-    artist_id = models.ForeignKey(Artist, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.name
-
 class Song(models.Model):
-    track = models.CharField(max_length=45, unique=True)
+    track = models.CharField(max_length=50, unique=True)
+    artist = models.CharField(max_length=50)
+    album = models.CharField(max_length=70)
     length = models.TimeField()
-    album_id = models.ForeignKey(Album, on_delete=models.CASCADE)
     
+
     def __str__(self):
-        return self.track
+        return str(self.track)
+
+class User(models.Model):
+    name = models.CharField(max_length=15, unique=True)
+    password = models.CharField(max_length=20)
+    email = models.CharField(max_length=50)
+
+    def __str__(self):
+        return str(self.name)
 
 class Playlist(models.Model):
-    name = models.CharField(max_length=45, unique=True)
-    number_of_songs = models.IntegerField(default=0)
+    name = models.CharField(max_length=70)
+    number_of_songs=models.IntegerField()
+    idUser = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.name
-    
-class Playlist_Song(models.Model):
-    song_id = models.ForeignKey(Song, on_delete=models.CASCADE)
-    playlist_id = models.ForeignKey(Playlist, on_delete=models.CASCADE)
+        return str(self.name)
 
+class SongPlaylist(models.Model):
+    idSong = models.ForeignKey(Song, on_delete=models.CASCADE)
+    idPlaylist = models.ForeignKey(Playlist, on_delete=models.CASCADE)
     
