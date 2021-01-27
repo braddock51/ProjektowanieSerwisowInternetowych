@@ -32,21 +32,21 @@ class User(models.Model):
     def __str__(self):
         return str(self.name)
     
-    
-        
-
-
+  
 class Playlist(models.Model):
     name = models.CharField(max_length=70)
     number_of_songs=models.IntegerField()
-    id_user = models.ForeignKey(User, on_delete=models.CASCADE)
+    id_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user')
 
     def __str__(self):
         return str(self.name)
 
 class SongPlaylist(models.Model):
-    id_song = models.ForeignKey(Song, on_delete=models.CASCADE)
-    id_playlist = models.ForeignKey(Playlist, on_delete=models.CASCADE)
+    id_song = models.ForeignKey(Song, on_delete=models.CASCADE, related_name='song_name')
+    id_playlist = models.ForeignKey(Playlist, on_delete=models.CASCADE, related_name='playlist_name')
+
+    def __str__(self):
+        return str(self.id_playlist)
 
 
 
