@@ -4,19 +4,24 @@ from .models import Song, Playlist, User, SongPlaylist
 
 
 class SongSerializer(serializers.ModelSerializer):
+    song_name = serializers.HyperlinkedRelatedField(many=True, read_only=True, view_name='songs-in-the-playlists' )
     class Meta:
         model = Song
-        fields = ['id','track', 'artist', 'album', 'length']
+        fields = ['pk','track', 'artist', 'album', 'length']
+        
 
-class PlaylistSerializer(serializers.ModelSerializer):
+class PlaylistSerializer(serializers.HyperlinkedModelSerializer):
+    playlist_name = serializers.HyperlinkedRelatedField(many=True, read_only=True, view_name='songs-in-the-playlists' )
+    id_user = serializers.SlugRelatedField(queryset=User.objects.all(), slug_field='name')
     class Meta:
         model = Playlist
-        fields = ['id', 'name', 'number_of_songs', 'id_user']
+        fields = ['pk', 'name', 'number_of_songs', 'id_user']
 
-class UserSerializer(serializers.ModelSerializer):
+class UserSerializer(serializers.HyperlinkedModelSerializer):
+    user = serializers.HyperlinkedRelatedField(many=True, read_only=True, view_name='playlist-list')
     class Meta:
         model = User
-        fields = ('name', 'password')
+        fields = ['pk', 'name', 'password']
         extra_kwargs = {'password': {'write_only': True}}
     
     def create(self, validated_data):
@@ -26,7 +31,12 @@ class UserSerializer(serializers.ModelSerializer):
         user.save()
         return user
 
-
+class SongPlaylistSerializer(serializers.ModelSerializer):
+    id_song = serializers.SlugRelatedField(queryset=Song.objects.all(), slug_field='track')
+    id_playlist = serializers.SlugRelatedField(queryset=Playlist.objects.all(), slug_field='name')
+    class Meta:
+        model = SongPlaylist
+        fields = ['pk', 'id_song', 'id_playlist']
 
 
 
