@@ -16,6 +16,10 @@ class Song(models.Model):
     artist = models.CharField(max_length=50)
     album = models.CharField(max_length=70)
     length = models.TimeField()
+
+    class Meta:
+        ordering = ('track',)
+
     
 
     def __str__(self):
@@ -25,6 +29,10 @@ class User(models.Model):
     name = models.CharField(max_length=15, unique=True)
     password = models.CharField(max_length=10000)
     email = models.CharField(max_length=50)
+
+    class Meta:
+        ordering = ('name',)
+
 
     def set_password(self, password):
         self.password = hash_password(password)
@@ -38,12 +46,20 @@ class Playlist(models.Model):
     number_of_songs=models.IntegerField()
     id_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user')
 
+    class Meta:
+        ordering = ('name',)
+
+
     def __str__(self):
         return str(self.name)
 
 class SongPlaylist(models.Model):
     id_song = models.ForeignKey(Song, on_delete=models.CASCADE, related_name='song_name')
     id_playlist = models.ForeignKey(Playlist, on_delete=models.CASCADE, related_name='playlist_name')
+
+    class Meta:
+        ordering = ('id_playlist',)
+
 
     def __str__(self):
         return str(self.id_playlist)
