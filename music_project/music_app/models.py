@@ -1,21 +1,15 @@
 from django.db import models
 import os, hashlib, binascii
+from django.contrib.auth.models import User
 
 
 
-def hash_password(password):
-    
-    salt = hashlib.sha256(os.urandom(60)).hexdigest().encode('ascii')
-    pwdhash = hashlib.pbkdf2_hmac('sha512', password.encode('utf-8'), 
-                                salt, 100000)
-    pwdhash = binascii.hexlify(pwdhash)
-    return (salt + pwdhash).decode('ascii')
 
 class Song(models.Model):
     track = models.CharField(max_length=50, unique=True)
     artist = models.CharField(max_length=50)
     album = models.CharField(max_length=70)
-    length = models.TimeField()
+    length = models.TimeField(default='00:00:00')
 
     class Meta:
         ordering = ('track',)
@@ -24,22 +18,7 @@ class Song(models.Model):
 
     def __str__(self):
         return str(self.track)
-
-class User(models.Model):
-    name = models.CharField(max_length=15, unique=True)
-    password = models.CharField(max_length=10000)
-    email = models.CharField(max_length=50)
-
-    class Meta:
-        ordering = ('name',)
-
-
-    def set_password(self, password):
-        self.password = hash_password(password)
-
-    def __str__(self):
-        return str(self.name)
-    
+ 
   
 class Playlist(models.Model):
     name = models.CharField(max_length=70)
